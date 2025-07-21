@@ -62,8 +62,9 @@ export const googleAuthCallback = (req, res) => {
     // Generate JWT token
     const token = generateToken(user);
     
-    // Redirect to frontend with token
-    res.redirect(`${process.env.FRONTEND_URL}/phone-number?token=${token}`);
+    // Redirect based on whether the user has a phone number
+    const redirectPath = user.phoneNumber ? 'start-course' : 'phone-number';
+    res.redirect(`${process.env.FRONTEND_URL}/${redirectPath}?token=${token}`);
   })(req, res);
 };
 

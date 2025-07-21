@@ -25,8 +25,8 @@ router.get('/google/callback', googleAuthCallback);
 router.get('/profile/:id', getUserProfile);
 
 // Protected routes (require authentication)
-router.get('/me', requireAdminAuth, getCurrentUser);
-router.put('/:id', requireAdminAuth, updateUser);
+router.get('/me',authenticateToken, getCurrentUser);
+router.put('/:id', authenticateToken, updateUser);
 router.delete('/:id', requireAdminAuth, deleteUser);
 
 // Admin routes (require authentication)

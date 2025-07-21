@@ -4,11 +4,16 @@ import {
   getSectionById,
   updateSectionById,
   deleteSectionById,
-  getAllSections
+  getAllSections,
+  getSectionsByCourseId
 } from '../controllers/sectionController.js';
 import { requireAdminAuth } from '../controllers/adminController.js';
 
 const router = express.Router();
+
+// Public: Get sections by courseId
+router.get('/by-course', getSectionsByCourseId);
+router.get('/:id',getSectionById);
 
 // Create a new section
 router.post('/', requireAdminAuth, createSection);
