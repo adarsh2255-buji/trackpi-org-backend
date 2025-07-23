@@ -1,5 +1,5 @@
 import express from 'express';
-import { markVideoWatched, startAssessment, submitAssessment, getCurrentSection, getNextSection, getSectionProgress, getCourseProgress } from '../controllers/userProgressController.js';
+import { markVideoWatched, startAssessment, submitAssessment, getCurrentSection, getNextSection, getSectionProgress, getCourseProgress, getProgress } from '../controllers/userProgressController.js';
 import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -18,5 +18,7 @@ router.get('/next-section', authenticateToken, getNextSection);
 router.get('/section-progress', authenticateToken, getSectionProgress);
 // Get course progress for a user
 router.get('/course-progress', authenticateToken, getCourseProgress);
+// GET progress for a specific course section
+router.get('/:courseId/:sectionId', authenticateToken, getProgress);
 
 export default router; 

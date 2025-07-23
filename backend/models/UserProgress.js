@@ -16,6 +16,7 @@ const userProgressSchema = new mongoose.Schema({
   unitComplete: { type: Boolean, default: false },
   sectionAssessment: sectionAssessmentSchema,
   sectionComplete: { type: Boolean, default: false },
+  sectionProgress: { type: Number, default: 0 }, // percent complete
   courseProgress: { type: Number, default: 0 }, // percent complete
   currentSection: { type: mongoose.Schema.Types.ObjectId, ref: 'Section' },
 }, { timestamps: true });

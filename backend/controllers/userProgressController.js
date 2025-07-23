@@ -23,8 +23,12 @@ export const markVideoWatched = async (req, res) => {
     // Get all videos in this section's unit
     const section = await Section.findById(sectionId);
     if (!section) return res.status(404).json({ error: 'Section not found' });
-    const unit = section.units[0]; // Each section contains a single unit
-    const allVideoIds = unit.units ? unit.units.map(u => u.videoID) : unit.videoID ? [unit.videoID] : [];
+    // Each section contains a single unit with multiple videos
+    const allVideoIds = section.units.map(u => u.videoID);
+    const watchedCount = progress.completedVideos.length;
+    const totalVideos = allVideoIds.length;
+    // Calculate section progress as a percentage
+    progress.sectionProgress = totalVideos > 0 ? Math.round((watchedCount / totalVideos) * 100) : 0;
     // If all videos are watched, mark unit and section as complete
     const allWatched = allVideoIds.every(id => progress.completedVideos.includes(id));
     progress.unitComplete = allWatched;
@@ -158,7 +162,7 @@ export const getSectionProgress = async (req, res) => {
     const userId = req.user._id;
     const progress = await UserProgress.findOne({ user: userId, course: courseId, section: sectionId });
     res.json({
-      sectionProgress: progress ? (progress.sectionComplete ? 100 : 0) : 0,
+      sectionProgress: progress ? progress.sectionProgress : 0,
       unitComplete: progress ? progress.unitComplete : false,
       sectionComplete: progress ? progress.sectionComplete : false,
       assessment: progress ? progress.sectionAssessment : null
@@ -184,3 +188,16 @@ export const getCourseProgress = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 }; 
+
+// GET user progress for a specific course section
+export const getProgress = async (req, res) => {
+  const { courseId, sectionId } = req.params;
+  const userId = req.user._id;
+
+  try {
+    const progress = await UserProgress.findOne({ user: userId, course: courseId, section: sectionId });
+    res.json(progress || { completedVideos: [] });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
